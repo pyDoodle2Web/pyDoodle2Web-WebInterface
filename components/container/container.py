@@ -6,7 +6,7 @@ class Container:
         self.isParentLike = True
         self.children = []
 
-        with open(os.path.join(os.getcwd(), 'components', 'Container', 'template.html')) as f:
+        with open(os.path.join(os.getcwd(), 'components', 'container', 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
 

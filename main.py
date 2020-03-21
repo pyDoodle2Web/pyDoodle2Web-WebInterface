@@ -1,5 +1,5 @@
 from components.html.html import HTML
-from components.Container.container import Container
+from components.container.container import Container
 from components.navbar.navbar import Navbar
 import os
 
@@ -36,6 +36,3 @@ yee, _ = generateHTML(html, 0, 'html')
 print(yee.template)
 with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:
     f.write(str(yee.template.prettify()))
-# print(html.template)
-# html.appendElement(Container().template)
-# print(html.template)
