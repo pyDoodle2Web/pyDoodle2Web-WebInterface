@@ -3,7 +3,7 @@ import os
 
 
 class Coloumn:
-    def __init__(self):
+    def __init__(self, cols = 4):
         self.name = 'coloumn'
         self.isParentLike = True
         self.children = []
@@ -11,6 +11,8 @@ class Coloumn:
         with open(os.path.join(os.getcwd(), 'components', 'coloumn', 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
+        div = soup.find('div')
+        div['class'] = f'col-sm-{cols}'
 
     def appendElement(self, element):
         if self.isParentLike:

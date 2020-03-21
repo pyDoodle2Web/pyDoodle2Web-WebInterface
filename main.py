@@ -5,19 +5,20 @@ from components.card.card import Card
 from components.row.row import Row
 from components.coloumn.coloumn import Coloumn
 import os
+from math import floor
 
 html = HTML()
 
 elementDict = {
-    'container': lambda: Container(),
-    'navbar': lambda: Navbar(),
-    'card': lambda: Card(),
-    'row': lambda: Row(),
-    'coloumn': lambda: Coloumn()
+    'container': lambda **kw: Container(**kw),
+    'navbar': lambda **kw: Navbar(**kw),
+    'card': lambda **kw: Card(**kw),
+    'row': lambda **kw: Row(**kw),
+    'coloumn': lambda **kw: Coloumn(**kw)
 }
-
-tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn',
-            'card', 'card', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+# 'row', 'coloumn', 'navbar', 'coloumn-end', 'row-end',
+tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
+            'card', 'card',  'card', 'row', 'coloumn', 'container', 'card','container-end','coloumn-end', 'row-end','coloumn-end' 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
 
 
 def generateHTML(parent,  tagName: str, index=0,):
@@ -31,18 +32,19 @@ def generateHTML(parent,  tagName: str, index=0,):
             for j in range(index, len(tagsList)):
                 if tagsList[j] == 'coloumn':
                     col_count += 1
-                if tagsList[j] == 'coloumn-end':
+                if tagsList[j] != 'coloumn':
                     break
             for coloumnNumber in range(col_count):
                 elementTag = tagsList[i]
-                element = elementDict.get(elementTag, Container)()
-                currentColChildIndex = index + col_count + coloumnNumber
-                print(currentColChildIndex, element.template)
-                appendedElement, _ = generateHTML(element, elementTag, currentColChildIndex)
+                element = elementDict.get(elementTag, Container)(cols = floor(12/col_count))
+                currentColChildIndex = index + col_count + coloumnNumber 
+                appendedElement, new_i = generateHTML(element, elementTag, currentColChildIndex)
                 parent.appendElement(appendedElement.template)
-            i = i + col_count*2
-        if elementTag == 'coloumn-end':
-            pass
+            i = i + new_i + 1
+            continue
+
+        if elementTag == 'coloumn-end' or elementTag == 'row-end':
+            return (parent, i)
 
         if elementTag == f'{tagName}-end':
             return (parent, i)
@@ -50,9 +52,12 @@ def generateHTML(parent,  tagName: str, index=0,):
             appendedElement, new_i = generateHTML(element, elementTag, i+1)
             parent.appendElement(appendedElement.template)
             i = new_i
-            pass
+            continue
         else:
             parent.appendElement(element.template)
+
+        if parent.name == 'coloumn':
+            return (parent, i)
 
         i = i + 1
 
