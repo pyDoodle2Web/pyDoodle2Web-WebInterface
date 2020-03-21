@@ -2,7 +2,7 @@ from components.html.html import HTML
 from components.container.container import Container
 from components.navbar.navbar import Navbar
 from components.card.card import Card
-
+from components.row.row import Row
 
 import os
 
@@ -11,17 +11,21 @@ html = HTML()
 elementDict = {
     'container': lambda: Container(),
     'navbar': lambda: Navbar(),
-    'card': lambda : Card(),
+    'card': lambda: Card(),
+    
+    'row': lambda: Row()
 }
 
-tagsList = ['navbar', 'container', 'card', 'container',  'container-end']
+tagsList = ['navbar', 'row', 'card',
+            'card', 'card', 'row-end',  'container-end']
 
-def generateHTML(parent,  tagName: str, index = 0,):
+
+def generateHTML(parent,  tagName: str, index=0,):
     i = index
     while i < len(tagsList):
         elementTag = tagsList[i]
         element = elementDict.get(elementTag, Container)()
-        
+
         if elementTag == f'{tagName}-end':
             return (parent, i)
         if element.isParentLike:
@@ -33,10 +37,11 @@ def generateHTML(parent,  tagName: str, index = 0,):
             parent.appendElement(element.template)
 
         i = i + 1
-        
+
     return (parent, i)
 
-yee, _ = generateHTML(parent = html, tagName = 'html')
+
+yee, _ = generateHTML(parent=html, tagName='html')
 print(yee.template)
 print(type(yee))
 with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:

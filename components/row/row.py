@@ -10,3 +10,13 @@ class Row:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
         self.children = []
+
+    def appendElement(self, element):
+        if self.isParentLike:
+            try:
+                self.template.findChild().append(element)
+            except Exception as e:
+                print(e)
+                pass
+        else:
+            raise Exception('This element is not a parent like element, cannot append child')
