@@ -3,6 +3,7 @@ import os
 
 class HTML:
     def __init__(self):
+        self.name = 'html'
         self.isParentLike = True
         self.children = []
         

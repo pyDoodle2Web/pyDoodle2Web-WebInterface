@@ -3,6 +3,7 @@ import os
 
 class Container:
     def __init__(self):
+        self.name = 'container'
         self.isParentLike = True
         self.children = []
 

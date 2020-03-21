@@ -4,6 +4,7 @@ import random
 
 class Card:
     def __init__(self):
+        self.name = 'card'
         self.isParentLike = False
 
         with open(os.path.join(os.getcwd(), 'components', 'card', 'template.html')) as f:
