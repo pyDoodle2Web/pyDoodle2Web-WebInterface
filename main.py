@@ -17,8 +17,11 @@ elementDict = {
     'coloumn': lambda **kw: Coloumn(**kw)
 }
 # 'row', 'coloumn', 'navbar', 'coloumn-end', 'row-end',
-tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
-            'card', 'card',  'card', 'row', 'coloumn', 'container', 'card','container-end','coloumn-end', 'row-end','coloumn-end' 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+# tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
+#             'card', 'card',  'card', 'row', 'coloumn', 'container', 'card','container-end','coloumn-end', 'row-end','coloumn-end' 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+tagsList = ['container', 'navbar', 'row', 'coloumn', 'coloumn', 'card', 'card',
+            'coloumn-end', 'coloumn-end', 'row-end', 'row', 'navbar', 'row-end', 'container-end',
+             'row', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'card','card','card','card','card','card','card','card','card','card','card','card','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','row-end']
 
 
 def generateHTML(parent,  tagName: str, index=0,):
@@ -36,9 +39,11 @@ def generateHTML(parent,  tagName: str, index=0,):
                     break
             for coloumnNumber in range(col_count):
                 elementTag = tagsList[i]
-                element = elementDict.get(elementTag, Container)(cols = floor(12/col_count))
-                currentColChildIndex = index + col_count + coloumnNumber 
-                appendedElement, new_i = generateHTML(element, elementTag, currentColChildIndex)
+                element = elementDict.get(elementTag, Container)(
+                    cols=floor(12/col_count))
+                currentColChildIndex = index + col_count + coloumnNumber
+                appendedElement, new_i = generateHTML(
+                    element, elementTag, currentColChildIndex)
                 parent.appendElement(appendedElement.template)
             i = i + new_i + 1
             continue
@@ -48,11 +53,13 @@ def generateHTML(parent,  tagName: str, index=0,):
 
         if elementTag == f'{tagName}-end':
             return (parent, i)
+
         if element.isParentLike:
             appendedElement, new_i = generateHTML(element, elementTag, i+1)
             parent.appendElement(appendedElement.template)
             i = new_i
-            continue
+            pass
+
         else:
             parent.appendElement(element.template)
 
@@ -65,7 +72,6 @@ def generateHTML(parent,  tagName: str, index=0,):
 
 
 yee, _ = generateHTML(parent=html, tagName='html')
-# print(yee.template)
-# print(type(yee))
+print(yee.template)
 with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:
     f.write(str(yee.template.prettify()))

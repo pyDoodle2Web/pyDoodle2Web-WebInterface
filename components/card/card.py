@@ -11,4 +11,4 @@ class Card:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
         card_image = soup.find('img') 
-        card_image['src'] = f'https://picsum.photos/{random.randint(300, 400)}?random=1'
+        card_image['src'] = f'https://picsum.photos/id/{random.randint(0, 1000)}/400/400'
