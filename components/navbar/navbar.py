@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup
+import os
 
 class Navbar:
     def __init__(self):
         self.isParentLike = False
 
-        with open('template.html') as f:
+        with open(os.path.join(os.getcwd(), 'components', 'navbar', 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
