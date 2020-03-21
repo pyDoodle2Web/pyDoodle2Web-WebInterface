@@ -10,9 +10,9 @@ elementDict = {
     'navbar': lambda: Navbar(),
 }
 
-tagsList = ['navbar', 'container', 'navbar', 'container', 'container-end', 'container-end']
+tagsList = ['container', 'container', 'navbar', 'container-end', 'container-end', 'navbar', 'navbar', 'navbar', 'navbar']
 
-def generateHTML(parent, index, tagName):
+def generateHTML(parent,  tagName: str, index = 0,):
     i = index
     while i < len(tagsList):
         elementTag = tagsList[i]
@@ -20,19 +20,20 @@ def generateHTML(parent, index, tagName):
         
         if elementTag == f'{tagName}-end':
             return (parent, i)
-
         if element.isParentLike:
-            appendedElement, new_i = generateHTML(element, i+1, elementTag)
+            appendedElement, new_i = generateHTML(element, elementTag, i+1)
             parent.appendElement(appendedElement.template)
             i = new_i
             pass
         else:
             parent.appendElement(element.template)
-            # print(parent.template)
+
         i = i + 1
+        
     return (parent, i)
 
-yee, _ = generateHTML(html, 0, 'html')
+yee, _ = generateHTML(parent = html, tagName = 'html')
 print(yee.template)
+print(type(yee))
 with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:
     f.write(str(yee.template.prettify()))
