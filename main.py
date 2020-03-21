@@ -12,7 +12,6 @@ elementDict = {
     'container': lambda: Container(),
     'navbar': lambda: Navbar(),
     'card': lambda: Card(),
-    
     'row': lambda: Row()
 }
 
