@@ -1,6 +1,9 @@
 from components.html.html import HTML
 from components.container.container import Container
 from components.navbar.navbar import Navbar
+from components.card.card import Card
+
+
 import os
 
 html = HTML()
@@ -8,9 +11,10 @@ html = HTML()
 elementDict = {
     'container': lambda: Container(),
     'navbar': lambda: Navbar(),
+    'card': lambda : Card(),
 }
 
-tagsList = ['container', 'container', 'navbar', 'container-end', 'container-end', 'navbar', 'navbar', 'navbar', 'navbar']
+tagsList = ['navbar', 'container', 'card', 'container',  'container-end']
 
 def generateHTML(parent,  tagName: str, index = 0,):
     i = index
