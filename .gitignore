@@ -132,3 +132,6 @@ dmypy.json
 .vscode
 dump
 dump.html
+media
+media/*
+.media
