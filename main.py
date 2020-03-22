@@ -11,77 +11,93 @@ from components.text.text import Text
 import os
 from math import floor
 
-html = HTML()
 
-elementDict = {
-    'container': lambda **kw: Container(**kw),
-    'navbar': lambda **kw: Navbar(**kw),
-    'card': lambda **kw: Card(**kw),
-    'row': lambda **kw: Row(**kw),
-    'coloumn': lambda **kw: Coloumn(**kw),
-    'jumbotron': lambda **kw: Jumbotron(**kw),
-    'carousel': lambda **kw: Carousel(**kw),
-    'image': lambda **kw: Image(**kw),
-    'text': lambda **kw: Text(**kw)
-}
-# 'row', 'coloumn', 'navbar', 'coloumn-end', 'row-end',
-# tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
-#             'card', 'card',  'card', 'row', 'coloumn', 'container', 'card','container-end','coloumn-end', 'row-end','coloumn-end' 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
-# tagsList = ['container', 'navbar', 'row', 'coloumn', 'coloumn', 'card', 'card',
-#             'coloumn-end', 'coloumn-end', 'row-end', 'row', 'navbar', 'row-end', 'container-end',
-#              'row', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'card','card','card','card','card','card','card','card','card','card','card','card','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','row-end']
-tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn', 'coloumn', 'coloumn', 'card', 'image', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end',
-            'row-end', 'container-end', 'container', 'row', 'coloumn', 'coloumn', 'image', 'text', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+class HTMLGenerator:
+    def __init__(self, tagsList = []):
+        self.html = HTML()
+        self.elementDict = {
+            'container': lambda **kw: Container(**kw),
+            'navbar': lambda **kw: Navbar(**kw),
+            'card': lambda **kw: Card(**kw),
+            'row': lambda **kw: Row(**kw),
+            'coloumn': lambda **kw: Coloumn(**kw),
+            'jumbotron': lambda **kw: Jumbotron(**kw),
+            'carousel': lambda **kw: Carousel(**kw),
+            'image': lambda **kw: Image(**kw),
+            'text': lambda **kw: Text(**kw)
+        }
+        # self.tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn', 'coloumn', 'coloumn', 'card', 'image', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end',
+        #                  'row-end', 'container-end', 'container', 'row', 'coloumn', 'coloumn', 'image', 'text', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+        self.tagsList = tagsList
 
+    def generateHTML(self, parent = HTML(),  tagName: str = 'html', index=0,):
+        i = index
+        while i < len(self.tagsList):
+            elementTag = self.tagsList[i]
+            element = self.elementDict.get(elementTag, Container)()
 
-def generateHTML(parent,  tagName: str, index=0,):
-    i = index
-    while i < len(tagsList):
-        elementTag = tagsList[i]
-        element = elementDict.get(elementTag, Container)()
+            if elementTag == 'coloumn':
+                col_count = 0
+                for j in range(index, len(self.tagsList)):
+                    if self.tagsList[j] == 'coloumn':
+                        col_count += 1
+                    if self.tagsList[j] != 'coloumn':
+                        break
+                for coloumnNumber in range(col_count):
+                    elementTag = self.tagsList[i]
+                    element = self.elementDict.get(elementTag, Container)(
+                        cols=floor(12/col_count))
+                    currentColChildIndex = index + col_count + coloumnNumber
+                    appendedElement, new_i = self.generateHTML(
+                        element, elementTag, currentColChildIndex)
+                    parent.appendElement(appendedElement.template)
+                i = i + new_i + 1
+                continue
 
-        if elementTag == 'coloumn':
-            col_count = 0
-            for j in range(index, len(tagsList)):
-                if tagsList[j] == 'coloumn':
-                    col_count += 1
-                if tagsList[j] != 'coloumn':
-                    break
-            for coloumnNumber in range(col_count):
-                elementTag = tagsList[i]
-                element = elementDict.get(elementTag, Container)(
-                    cols=floor(12/col_count))
-                currentColChildIndex = index + col_count + coloumnNumber
-                appendedElement, new_i = generateHTML(
-                    element, elementTag, currentColChildIndex)
+            if elementTag == 'coloumn-end' or elementTag == 'row-end':
+                return (parent, i)
+
+            if elementTag == f'{tagName}-end':
+                return (parent, i)
+
+            if element.isParentLike:
+                appendedElement, new_i = self.generateHTML(element, elementTag, i+1)
                 parent.appendElement(appendedElement.template)
-            i = i + new_i + 1
-            continue
+                i = new_i
+                pass
 
-        if elementTag == 'coloumn-end' or elementTag == 'row-end':
-            return (parent, i)
+            else:
+                parent.appendElement(element.template)
 
-        if elementTag == f'{tagName}-end':
-            return (parent, i)
+            if parent.name == 'coloumn':
+                return (parent, i)
 
-        if element.isParentLike:
-            appendedElement, new_i = generateHTML(element, elementTag, i+1)
-            parent.appendElement(appendedElement.template)
-            i = new_i
-            pass
+            i = i + 1
 
-        else:
-            parent.appendElement(element.template)
-
-        if parent.name == 'coloumn':
-            return (parent, i)
-
-        i = i + 1
-
-    return (parent, i)
+        return (parent, i)
 
 
-yee, _ = generateHTML(parent=html, tagName='html')
-print(yee.template)
-with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:
-    f.write(str(yee.template.prettify()))
+if __name__ == '__main__':
+    from ocr import OCR
+    import argparse
+    import sys, getopt
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p','--path', help='Path of the image', required=True)
+    args = parser.parse_args()
+
+    path = args.path
+    tags = OCR(path).readText()
+    html, _ = HTMLGenerator(tags).generateHTML()
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dump.html'), 'w') as f:
+        f.write(str(html.template.prettify()))
+        
+    print(html.template)
+
+
+
+
+
+# yee, _ = HTMLGenerator().generateHTML()
+# print(yee.template)
+# with open(os.path.join(os.getcwd(), 'dump.html'), 'w') as f:
+#     f.write(str(yee.template.prettify()))
