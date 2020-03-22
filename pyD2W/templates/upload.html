@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container p-5">
+  <h2>Upload your doodle</h2>
+  <form class="form-group" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
+    <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
+  </form>
+  {% if url %}
+    <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
+  {% endif %}
+
+  {% if error %}
+  <p style="color: red;">{{error}}</p>
+  {% endif %}
+
+
+</div>
+  
+{% endblock %}
