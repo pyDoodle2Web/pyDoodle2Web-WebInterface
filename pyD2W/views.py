@@ -18,8 +18,9 @@ def upload(request):
             fs = FileSystemStorage()
             name = fs.save(uploaded_file.name, uploaded_file)
             context['url'] = fs.url(name)
-            tagsList = OCR(uploaded_file.name).readText()
-            
+            print(name)
+            tagsList = OCR(name).readText()
+            print(tagsList)
         except Exception:
             context['error'] = 'Error Occurred! Make sure the uploaded file is an Image'
         
