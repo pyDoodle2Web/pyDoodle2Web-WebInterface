@@ -7,7 +7,7 @@ class Row:
         self.name = 'row'
         self.isParentLike = True
 
-        with open(os.path.join(os.getcwd(), 'components', 'row', 'template.html')) as f:
+        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
         self.children = []

@@ -7,7 +7,7 @@ class HTML:
         self.isParentLike = True
         self.children = []
         
-        with open(os.path.join(os.getcwd(), 'components', 'html', 'template.html')) as f:
+        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         self.template = soup
 

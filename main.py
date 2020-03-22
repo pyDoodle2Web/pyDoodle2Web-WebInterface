@@ -4,6 +4,7 @@ from components.navbar.navbar import Navbar
 from components.card.card import Card
 from components.row.row import Row
 from components.coloumn.coloumn import Coloumn
+from components.jumbotron.jumbotron import Jumbotron
 import os
 from math import floor
 
@@ -14,14 +15,16 @@ elementDict = {
     'navbar': lambda **kw: Navbar(**kw),
     'card': lambda **kw: Card(**kw),
     'row': lambda **kw: Row(**kw),
-    'coloumn': lambda **kw: Coloumn(**kw)
+    'coloumn': lambda **kw: Coloumn(**kw),
+    'jumbotron': lambda **kw: Jumbotron(**kw)
 }
 # 'row', 'coloumn', 'navbar', 'coloumn-end', 'row-end',
 # tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
 #             'card', 'card',  'card', 'row', 'coloumn', 'container', 'card','container-end','coloumn-end', 'row-end','coloumn-end' 'coloumn-end', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
-tagsList = ['container', 'navbar', 'row', 'coloumn', 'coloumn', 'card', 'card',
-            'coloumn-end', 'coloumn-end', 'row-end', 'row', 'navbar', 'row-end', 'container-end',
-             'row', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'card','card','card','card','card','card','card','card','card','card','card','card','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','row-end']
+# tagsList = ['container', 'navbar', 'row', 'coloumn', 'coloumn', 'card', 'card',
+#             'coloumn-end', 'coloumn-end', 'row-end', 'row', 'navbar', 'row-end', 'container-end',
+#              'row', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'card','card','card','card','card','card','card','card','card','card','card','card','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','row-end']
+tagsList = ['container', 'jumbotron', 'container-end', 'container','row', 'coloumn', 'coloumn', 'card', 'card', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
 
 
 def generateHTML(parent,  tagName: str, index=0,):
