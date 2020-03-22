@@ -6,6 +6,8 @@ from components.row.row import Row
 from components.coloumn.coloumn import Coloumn
 from components.jumbotron.jumbotron import Jumbotron
 from components.carousel.carousel import Carousel
+from components.image.image import Image
+from components.text.text import Text
 import os
 from math import floor
 
@@ -18,7 +20,9 @@ elementDict = {
     'row': lambda **kw: Row(**kw),
     'coloumn': lambda **kw: Coloumn(**kw),
     'jumbotron': lambda **kw: Jumbotron(**kw),
-    'carousel': lambda **kw: Carousel(**kw)
+    'carousel': lambda **kw: Carousel(**kw),
+    'image': lambda **kw: Image(**kw),
+    'text': lambda **kw: Text(**kw)
 }
 # 'row', 'coloumn', 'navbar', 'coloumn-end', 'row-end',
 # tagsList = ['navbar', 'container', 'row', 'coloumn', 'coloumn', 'coloumn','coloumn',
@@ -26,7 +30,8 @@ elementDict = {
 # tagsList = ['container', 'navbar', 'row', 'coloumn', 'coloumn', 'card', 'card',
 #             'coloumn-end', 'coloumn-end', 'row-end', 'row', 'navbar', 'row-end', 'container-end',
 #              'row', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'coloumn', 'card','card','card','card','card','card','card','card','card','card','card','card','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','coloumn-end','row-end']
-tagsList = ['navbar', 'carousel',  'container','row', 'coloumn', 'coloumn', 'card', 'card', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
+tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn', 'coloumn', 'coloumn', 'card', 'image', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end',
+            'row-end', 'container-end', 'container', 'row', 'coloumn', 'coloumn', 'image', 'text', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
 
 
 def generateHTML(parent,  tagName: str, index=0,):
