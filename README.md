@@ -1,5 +1,5 @@
 # pyDoodle2Web
-Reference-style: 
+
 ![logo](https://raw.githubusercontent.com/therexone/pyDoodle2Web/master/pyDoodle2Web.png)
 
 
