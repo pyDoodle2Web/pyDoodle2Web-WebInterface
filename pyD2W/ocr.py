@@ -10,7 +10,7 @@ from difflib import get_close_matches
 class OCR:
     def __init__(self, imageName: str):
         self.imageName = imageName
-        self.real_tags = ['container', 'row', 'coloumn', 'navbar', 'col', 'image', 'card', 'container-end', 'row-end', 'coloumn-end']
+        self.real_tags = ['container', 'row', 'coloumn', 'navbar', 'col', 'image', 'card', 'container-end', 'row-end', 'coloumn-end', 'carousel', 'text']
         self.allowed_tags = ['container', 'row', 'coloumn', 'navbar', 'image', 'card', 'column', 'cofoumm']
 
     def formater(self, line: str):
@@ -28,10 +28,15 @@ class OCR:
 
     def fixTags(self, tags):
         final_tags = []
+        print(tags)
         for tag in tags:
-            close_match = get_close_matches(tag, self.real_tags, n = 1, cutoff = 0.6)
-            if close_match[0] in self.real_tags:
-                final_tags.append(close_match[0])
+            try:
+                close_match = get_close_matches(tag, self.real_tags, n = 1, cutoff = 0.6)
+                if close_match[0] in self.real_tags:
+                    final_tags.append(close_match[0])
+            except Exception as e:
+                print(e, tag)
+                pass
         return final_tags
 
 
@@ -41,8 +46,8 @@ class OCR:
             print(path)
             text = pytesseract.image_to_string(path)
             tags = self.builder(text)
-            return self.fixTags(tags)
-            
+            a= self.fixTags(tags)
+            return a
         except PIL.UnidentifiedImageError:
             print('Could not read the image file, check filetype.')
 

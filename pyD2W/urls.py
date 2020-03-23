@@ -6,6 +6,6 @@ from . import views
 urlpatterns = [
     path('', views.home),
     path('upload/', views.upload, name='upload'),
-    path('generated/', views.generated, name='generated'),
+    path('generate/', views.generate, name='generate'),
     path('downloadSource/', views.downloadSource, name='downloadSource')
 ]

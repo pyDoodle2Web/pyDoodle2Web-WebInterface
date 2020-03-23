@@ -16,6 +16,7 @@ def home(request):
 
 def upload(request):
     context = {}
+
     if request.method == 'POST':
         uploaded_file = request.FILES['document']
         try:
@@ -23,20 +24,23 @@ def upload(request):
             fs = FileSystemStorage()
             name = fs.save(uploaded_file.name, uploaded_file)
             context['url'] = fs.url(name)
-            print(name)
+
             tagsList = OCR(name).readText()
             html, _ = HTMLGenerator(tagsList).generateHTML()
+
             with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
                 f.flush()
                 f.write(str(html.template.prettify()))
+
             context['generated_url'] = True
-        except Exception:
+        except Exception as e:
             context['error'] = 'Error Occurred! Make sure the uploaded file is an Image'
+            print(e)
 
     return render(request, 'upload.html', context)
 
 
-def generated(request):
+def generate(request):
     return render(request, 'generated.html')
 
 
