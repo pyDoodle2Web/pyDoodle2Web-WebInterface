@@ -33,6 +33,7 @@ def upload(request):
                 f.write(str(html.template.prettify()))
 
             context['generated_url'] = True
+            fs.delete(uploaded_file.name)
         except Exception as e:
             context['error'] = 'Error Occurred! Make sure the uploaded file is an Image'
             print(e)
