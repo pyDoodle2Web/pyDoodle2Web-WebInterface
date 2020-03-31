@@ -18,7 +18,8 @@
   .literally {
     height: 100%;
   }
-  input[type=checkbox]{
+
+  input[type=checkbox] {
     width: 20px;
     height: 20px;
   }
@@ -42,12 +43,12 @@
   <form class="form-group mt-4" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
-    <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
-    <div class="d-block mt-3 alert alert-primary w-50">
+
+    <div class="d-inline-block mt-3 alert alert-primary w-50">
       <input type="checkbox" name="darkMode" value='true' class="checkbox">
       <label class="ml-2 align-top d-inline" for="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
-     
     </div>
+    <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
 
   </form>
   {% if url %}
