@@ -1,14 +1,46 @@
 {% extends 'base.html' %}
 
+
+{% block additional-head %}
+
+  <!-- stylesheet -->
+  <!-- {% load static %} -->
+  <link href="{% static "literallycanvas/literallycanvas.css" %}" rel="stylesheet">
+
+  <!-- dependency: React.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+
+  <!-- Literally Canvas -->
+  <script src="{% static "literallycanvas/literallycanvas.min.js" %}"></script>
+  <style>
+    .literally {
+      height: 100%;
+    }
+    /* p{
+      font-weight: 300;
+    } */
+  </style>
+{% endblock %}
+
+
 {% block content %}
-<div class="container p-5">
+<div class="container px-lg-4 py-5">
   <h2>Upload your doodle</h2>
-  <form class="form-group" method="post" enctype="multipart/form-data">
+  <div class="alert alert-secondary pt-3">
+    <p>Make sure your doodle has clear and visible lines and text. pyDoodle2Web currently works best with digitally drawn lines and text (MS paint drawn shapes).
+     <br> To check out an example doodle, <a href="">click here.  </a>
+    </p>
+  </div>
+  <form class="form-group mt-4" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
     <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
-    <label for="darkMode">Dark Mode</label>
-    <input type="checkbox" name="darkMode" value='true'>
+    <div class="d-block mt-3 ">
+      <label for="darkMode">Dark Mode</label>
+      <input type="checkbox" name="darkMode" value='true' >
+    </div>
+
   </form>
   {% if url %}
   <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
@@ -22,6 +54,37 @@
   <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
   <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
   {% endif %}
+
+  <hr>
+  <h2>Draw it!</h2>
+  <p>Use the <a href="http://literallycanvas.com/">Literally Canvas</a> powered drawing tool to draw and download a doodle right here.</p>
+  <div class="my-drawing" style="height: 640px; border: 1px solid grey;"></div>
+  <button class="btn btn-dark mt-4 px-4"  onclick="saveImage()">Get Doodle</button>
+
+  <script>
+    var lc = LC.init(
+      document.getElementsByClassName('my-drawing')[0],
+      {
+        imageURLPrefix: '{% static "literallycanvas/img" %}', tools: [
+          LC.tools.Rectangle,
+          LC.tools.Eraser,
+          LC.tools.Line,
+          LC.tools.Text,],
+        strokeWidths: [1, 2, 5, 10, 15],
+        defaultStrokeWidth: 1,
+        backgroundShapes: [LC.createShape('Rectangle', {x:0, y: 0, width: 1024, height: 640, strokeWidth: 1, fillColor: '#fff'})]
+      }
+    );
+    function debugBase64(base64URL) {
+      var win = window.open();
+      win.document.write('<iframe src="' + base64URL + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+    }
+
+    function saveImage() {
+      debugBase64(lc.getImage().toDataURL());
+    }
+  </script>
+
 
 
 </div>
