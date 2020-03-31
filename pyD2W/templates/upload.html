@@ -10,7 +10,7 @@
 <!-- dependency: React.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script> -->
 
 <!-- Literally Canvas -->
 <script src="{% static "literallycanvas/literallycanvas.min.js" %}"></script>
@@ -65,7 +65,7 @@
     doodle right here.</p>
   <div class="my-drawing" style="height: 640px; border: 1px solid grey;"></div>
   <button class="btn btn-dark mt-4 px-4" onclick="saveImage()">Get Doodle</button>
-  <button class="btn btn-dark" onclick="uploadDoodle()"> Upload</button>
+  <!-- <button class="btn btn-dark" onclick="uploadDoodle()"> Upload</button> -->
 
   <script>
     var lc = LC.init(
@@ -91,29 +91,29 @@
     }
 
     var imageUrl = lc.getImage().toDataURL();
-    var csrftoken = getCookie('csrftoken');
+    // var csrftoken = getCookie('csrftoken');
 
     function saveImage() {
       getDoodle(imageUrl);
     }
 
-    function uploadDoodle() {
-      $.ajax({
-        url: "/upload/",
-        type: "POST",
-        data: { 'imageUrl': imageUrl },
-        headers: {
-          "X-CSRFToken": csrftoken
-        },
-        success: function (response) {
-          $('.container').append("<p>Uploaded<p>")
-        },
-        complete: function () { },
-        error: function (xhr, textStatus, thrownError) {
-          alert("error doing something");
-        }
-      });
-    }
+    // function uploadDoodle() {
+    //   $.ajax({
+    //     url: "/upload/",
+    //     type: "POST",
+    //     data: { 'imageUrl': imageUrl },
+    //     headers: {
+    //       "X-CSRFToken": csrftoken
+    //     },
+    //     success: function (response) {
+    //       $('.container').append("<p>Uploaded<p>")
+    //     },
+    //     complete: function () { },
+    //     error: function (xhr, textStatus, thrownError) {
+    //       alert("error doing something");
+    //     }
+    //   });
+    // }
 
   </script>
 
