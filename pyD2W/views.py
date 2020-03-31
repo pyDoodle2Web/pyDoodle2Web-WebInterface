@@ -8,6 +8,9 @@ from .ocr import OCR
 from django.core.validators import validate_image_file_extension
 from generator.main import HTMLGenerator
 import os
+import base64
+
+from django.core.files.base import ContentFile
 
 
 def home(request):
@@ -22,6 +25,13 @@ def upload(request):
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
         print(darkMode)
         uploaded_file = request.FILES['document']
+        if request.POST['imageURL']:
+            url = request.POST['imageURL']
+            format, imgstr = url.split(';base64,') 
+            ext = format.split('/')[-1] 
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+            uploaded_file = data 
+
         try:
             validate_image_file_extension(uploaded_file)
             fs = FileSystemStorage()
