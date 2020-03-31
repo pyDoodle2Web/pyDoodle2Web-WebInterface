@@ -18,6 +18,10 @@
   .literally {
     height: 100%;
   }
+  input[type=checkbox]{
+    width: 20px;
+    height: 20px;
+  }
 </style>
 {% endblock %}
 
@@ -25,6 +29,8 @@
 
 {% block content %}
 <div class="container px-lg-4 py-5">
+  <img src="{% static "assets/pyDoodle2Web.png" %}" alt="pyDoodle2Web-logo" class="img-fluid my-1">
+  <hr>
   <h2>Upload your doodle</h2>
   <div class="alert alert-secondary pt-3">
     <p>Make sure your doodle has clear and visible lines and text. pyDoodle2Web currently works best with digitally
@@ -37,9 +43,10 @@
     {% csrf_token %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
     <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
-    <div class="d-block mt-3 ">
-      <label for="darkMode">Dark Mode</label>
-      <input type="checkbox" name="darkMode" value='true'>
+    <div class="d-block mt-3 alert alert-primary w-50">
+      <input type="checkbox" name="darkMode" value='true' class="checkbox">
+      <label class="ml-2 align-top d-inline" for="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
+     
     </div>
 
   </form>

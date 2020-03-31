@@ -24,13 +24,13 @@ def upload(request):
         darkMode = True if request.POST.getlist(
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
         print(darkMode)
-        uploaded_file = request.FILES['document']
-        if request.POST['imageURL']:
-            url = request.POST['imageURL']
-            format, imgstr = url.split(';base64,') 
-            ext = format.split('/')[-1] 
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-            uploaded_file = data 
+        uploaded_file = filepath = request.FILES['document'] if 'document' in request.FILES else False
+        # if request.POST['imageURL']:
+        #     url = request.POST['imageURL']
+        #     format, imgstr = url.split(';base64,') 
+        #     ext = format.split('/')[-1] 
+        #     data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        #     uploaded_file = data 
 
         try:
             validate_image_file_extension(uploaded_file)
@@ -49,7 +49,7 @@ def upload(request):
             context['generated_url'] = True
             fs.delete(uploaded_file.name)
         except Exception as e:
-            context['error'] = 'Error Occurred! Make sure the uploaded file is an Image'
+            context['error'] = 'Error Occurred! Make sure the uploaded file is an Image' if uploaded_file else 'No file choosen!'
             print(e)
 
     return render(request, 'upload.html', context)
