@@ -7,9 +7,11 @@
     {% csrf_token %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
     <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
+    <label for="darkMode">Dark Mode</label>
+    <input type="checkbox" name="darkMode" value='true'>
   </form>
   {% if url %}
-    <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
+  <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
   {% endif %}
 
   {% if error %}
@@ -17,11 +19,11 @@
   {% endif %}
 
   {% if generated_url %}
-    <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
-    <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
+  <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
+  <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
   {% endif %}
 
 
 </div>
-  
+
 {% endblock %}

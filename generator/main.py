@@ -13,8 +13,8 @@ from math import floor
 
 
 class HTMLGenerator:
-    def __init__(self, tagsList = []):
-        self.html = HTML()
+    def __init__(self, tagsList = [], darkMode=False):
+        self.html = HTML(darkMode=darkMode)
         self.elementDict = {
             'container': lambda **kw: Container(**kw),
             'navbar': lambda **kw: Navbar(**kw),
@@ -26,15 +26,19 @@ class HTMLGenerator:
             'image': lambda **kw: Image(**kw),
             'text': lambda **kw: Text(**kw)
         }
+        self.darkModeTags = ['navbar', 'card']
+        self.darkMode = darkMode
         # self.tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn', 'coloumn', 'coloumn', 'card', 'image', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end',
         #                  'row-end', 'container-end', 'container', 'row', 'coloumn', 'coloumn', 'image', 'text', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
         self.tagsList = tagsList
 
-    def generateHTML(self, parent = HTML(),  tagName: str = 'html', index=0,):
+    def generateHTML(self, parent = None,  tagName: str = 'html', index=0):
+        parent = self.html if not parent else parent
         i = index
         while i < len(self.tagsList):
             elementTag = self.tagsList[i]
-            element = self.elementDict.get(elementTag, Container)()
+            element = self.elementDict.get(elementTag, Container)
+            element = element(darkMode=self.darkMode) if elementTag in self.darkModeTags else element()
 
             if elementTag == 'coloumn':
                 col_count = 0

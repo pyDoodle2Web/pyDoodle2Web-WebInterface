@@ -18,6 +18,9 @@ def upload(request):
     context = {}
 
     if request.method == 'POST':
+        darkMode = True if request.POST.getlist(
+            'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
+        print(darkMode)
         uploaded_file = request.FILES['document']
         try:
             validate_image_file_extension(uploaded_file)
@@ -26,11 +29,12 @@ def upload(request):
             context['url'] = fs.url(name)
 
             tagsList = OCR(name).readText()
-            html, _ = HTMLGenerator(tagsList).generateHTML()
+            html, _ = HTMLGenerator(tagsList, darkMode=darkMode).generateHTML()
 
             with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
-                f.flush()
+                f.seek(0)
                 f.write(str(html.template.prettify()))
+                f.truncate()
 
             context['generated_url'] = True
             fs.delete(uploaded_file.name)
@@ -46,7 +50,10 @@ def generate(request):
 
 
 def downloadSource(request):
-    fs = FileSystemStorage(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates'))
-    response = FileResponse(fs.open('generated.html', 'rb'), content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('generated.html')
+    fs = FileSystemStorage(os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), 'templates'))
+    response = FileResponse(fs.open('generated.html', 'rb'),
+                            content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str(
+        'generated.html')
     return response
