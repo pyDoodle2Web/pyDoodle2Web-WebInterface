@@ -29,7 +29,9 @@ Currently these basic components of Bootstrap 4 are supported:
 
 > Parent like components(``container, row, col``) require a closing tag with ``-end``
 >> ``container`` requires a ``container-end``
+
 >> ``row`` requires a ``row-end``
+
 >> ``column`` requires a ``column-end``
 
 
