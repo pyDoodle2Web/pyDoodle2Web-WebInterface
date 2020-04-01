@@ -11,6 +11,7 @@ from generator.dynamic_generator import DynamicHtmlGenerator
 import os
 import base64
 import logging
+from bs4 import BeautifulSoup
 
 from django.core.files.base import ContentFile
 
@@ -25,7 +26,7 @@ def upload(request):
     if request.method == 'POST':
         darkMode = True if request.POST.getlist(
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
-        print(darkMode)
+
         uploaded_file = request.FILES['document'] if 'document' in request.FILES else False
         # if request.POST['imageURL']:
         #     url = request.POST['imageURL']
@@ -34,33 +35,41 @@ def upload(request):
         #     data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
         #     uploaded_file = data 
 
-
+        tagsList = []
         try:
-            validate_image_file_extension(uploaded_file)
-            fs = FileSystemStorage()
+
             if uploaded_file:
-                print('niggggga')
+                validate_image_file_extension(uploaded_file)
+                fs = FileSystemStorage()
                 name = fs.save(uploaded_file.name, uploaded_file)
-            context['url'] = fs.url(name)
+                context['url'] = fs.url(name)
 
-            tagsList = OCR(name).readText()
-            
-            html, _ = HTMLGenerator(tagsList, darkMode=darkMode).generateHTML()
-
-            if 'navbar' in tagsList:
+                tagsList = OCR(name).readText()
+                html, _ = HTMLGenerator(tagsList, darkMode=darkMode).generateHTML()
                 context['navbarTitle'] = True
+
+                with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
+                    f.seek(0)
+                    f.write(str(html.template.prettify()))
+
+            if  len(request.POST.getlist('navbarTitle')) > 0:
+                
                 tagData = {}
                 tagData['navbar'] = request.POST.getlist('navbarTitle')[0]
+                print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'))
+                with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html')) as f:
+                    html = BeautifulSoup(f, 'html.parser')
                 html = DynamicHtmlGenerator(html, tagData).add_data_to_html()
 
-            with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
-                f.seek(0)
-                f.write(str(html.template.prettify()))
+                with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
+                    f.seek(0)
+                    f.write(str(html.prettify()))
 
             context['generated_url'] = True
-            fs.delete(uploaded_file.name)
+            if uploaded_file:
+                fs.delete(uploaded_file.name)
         except Exception as e:
-            context['error'] = 'Error Occurred! Make sure the uploaded file is an Image' if uploaded_file else 'No file choosen!'
+            context['error'] = 'Error Occurred! Make sure the uploaded file is an Image' if uploaded_file else 'No file choosen!' if not context['navbarTitle'] else ''
             print(e)
             # logging.getLogger(__name__).exception()
 
