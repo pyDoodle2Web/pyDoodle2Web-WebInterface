@@ -24,7 +24,7 @@ def upload(request):
         darkMode = True if request.POST.getlist(
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
         print(darkMode)
-        uploaded_file = filepath = request.FILES['document'] if 'document' in request.FILES else False
+        uploaded_file = request.FILES['document'] if 'document' in request.FILES else False
         # if request.POST['imageURL']:
         #     url = request.POST['imageURL']
         #     format, imgstr = url.split(';base64,') 
