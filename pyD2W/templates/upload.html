@@ -3,7 +3,6 @@
 <!-- ------------------Litterally Canvas Files-------------- -->
 {% block additional-head %}
 
-<!-- stylesheet -->
 {% load static %}
 <link href="{% static "literallycanvas/literallycanvas.css" %}" rel="stylesheet">
 
@@ -44,6 +43,17 @@
     {% csrf_token %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
 
+    <!-- ------------------------Dyanmic content form------------------------- -->
+    {% if navbarTitle %}
+    <div class="alert alert-success mt-4">
+      <p>A navbar was detected in the doodle. Enter a Company Name: </p>
+      <input type="text" name="navbarTitle">
+      <button class="btn btn-dark ml-4 px-4" type="submit">Add Title</button>
+    </div>
+
+    {% endif %}
+
+
     <div class="d-inline-block mt-3 alert alert-primary w-50">
       <input type="checkbox" name="darkMode" value='true' class="checkbox">
       <label class="ml-2 align-top d-inline" for="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
@@ -62,6 +72,7 @@
   {% if generated_url %}
   <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
   <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
+
   {% endif %}
 
 
