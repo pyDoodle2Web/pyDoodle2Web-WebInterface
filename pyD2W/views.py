@@ -46,16 +46,23 @@ def upload(request):
 
                 tagsList = OCR(name).readText()
                 html, _ = HTMLGenerator(tagsList, darkMode=darkMode).generateHTML()
-                context['navbarTitle'] = True
+      
+                context['navbarTitle'] = True if 'navbar' in tagsList else False
+                context['carousel'] = True if 'carousel' in tagsList else False
 
                 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'), 'w') as f:
                     f.seek(0)
                     f.write(str(html.template.prettify()))
 
-            if  len(request.POST.getlist('navbarTitle')) > 0:
+            if  len(request.POST.getlist('navbarTitle') or request.POST.getlist('carousel')) > 0:
                 
                 tagData = {}
-                tagData['navbar'] = request.POST.getlist('navbarTitle')[0]
+                
+                if len(request.POST.getlist('navbarTitle')) > 0:
+                    tagData['navbar'] = request.POST.getlist('navbarTitle')[0]
+                if len(request.POST.getlist('carousel')) > 0:
+                    tagData['carousel'] = request.POST.getlist('carousel')[0]
+                    
                 print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'))
                 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html')) as f:
                     html = BeautifulSoup(f, 'html.parser')
@@ -65,7 +72,7 @@ def upload(request):
                     f.seek(0)
                     f.write(str(html.prettify()))
 
-            context['generated_url'] = True
+            context['generated_url'] = True 
             if uploaded_file:
                 fs.delete(uploaded_file.name)
         except Exception as e:

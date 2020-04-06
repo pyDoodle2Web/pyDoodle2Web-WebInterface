@@ -41,24 +41,52 @@
   </div>
   <form class="form-group mt-4" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
 
+    {% if not carousel or navbarTitle %}
+    <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
+    {% endif %}
     <!-- ------------------------Dyanmic content form------------------------- -->
     {% if navbarTitle %}
     <div class="alert alert-success mt-4">
-      <p>A navbar was detected in the doodle. Enter a Company Name: </p>
+      <p>A navbar was detected in the doodle. Enter a title for the Navbar: </p>
       <input type="text" name="navbarTitle">
-      <button class="btn btn-dark ml-4 px-4" type="submit">Add Title</button>
+    </div>
+
+    {% endif %}
+
+    {% if carousel %}
+
+    <div class="alert alert-success mt-4 form-group d-inline-block">
+      <p>A carousel was detected in the doodle. Select the number of images in the carousel: </p>
+      <select name="carousel" class="form-control d-inline-block w-50" >
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+      </select>
     </div>
 
     {% endif %}
 
 
+    {% if navbarTitle or carousel %}
+    <button class="btn btn-dark ml-4 px-4" type="submit">Add customisation</button>
+    {% endif %}
+
+    {% if not carousel or navbarTitle %}
     <div class="d-inline-block mt-3 alert alert-primary w-50">
       <input type="checkbox" name="darkMode" value='true' class="checkbox">
       <label class="ml-2 align-top d-inline" for="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
     </div>
     <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
+
+    {% endif %}
 
   </form>
   {% if url %}
