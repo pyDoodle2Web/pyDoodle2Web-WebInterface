@@ -84,6 +84,8 @@
     doodle right here.</p>
   <div class="my-drawing" style="height: 640px; border: 1px solid grey;"></div>
   <button class="btn btn-dark mt-4 px-4" onclick="saveImage()">Get Doodle</button>
+  <button class="btn btn-dark mt-4 px-4" onclick="uploadImage()">Generate Website</button>
+
   <!-- <button class="btn btn-dark" onclick="uploadDoodle()"> Upload</button> -->
 
   <script>
@@ -116,23 +118,42 @@
       getDoodle(imageUrl);
     }
 
-    // function uploadDoodle() {
-    //   $.ajax({
-    //     url: "/upload/",
-    //     type: "POST",
-    //     data: { 'imageUrl': imageUrl },
-    //     headers: {
-    //       "X-CSRFToken": csrftoken
-    //     },
-    //     success: function (response) {
-    //       $('.container').append("<p>Uploaded<p>")
-    //     },
-    //     complete: function () { },
-    //     error: function (xhr, textStatus, thrownError) {
-    //       alert("error doing something");
-    //     }
-    //   });
-    // }
+
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    
+    function uploadImage() {
+      $.ajax({
+        url: "/upload/",
+        type: "POST",
+        data: { 'imageUrl': lc.getImage().toDataURL() },
+        headers: {
+          "X-CSRFToken": getCookie('csrftoken')
+        },
+        success: function (response) {
+          var a = document.createElement('a');
+          a.href = '/generate';
+          document.body.appendChild(a);
+          a.click()
+        },
+        complete: function () { },
+        error: function (xhr, textStatus, thrownError) {
+          alert("error doing something");
+        }
+      });
+    }
 
   </script>
 

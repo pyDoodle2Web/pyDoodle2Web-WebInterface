@@ -28,20 +28,24 @@ def upload(request):
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
 
         uploaded_file = request.FILES['document'] if 'document' in request.FILES else False
-        # if request.POST['imageURL']:
-        #     url = request.POST['imageURL']
-        #     format, imgstr = url.split(';base64,') 
-        #     ext = format.split('/')[-1] 
-        #     data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-        #     uploaded_file = data 
+      
+        if request.POST.dict().get('imageUrl', False):
+            url = request.POST.dict().get('imageUrl', False)
+            format, imgstr = url.split(';base64,') 
+            ext = format.split('/')[-1] 
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+            uploaded_file = data
 
         tagsList = []
         try:
 
             if uploaded_file:
                 validate_image_file_extension(uploaded_file)
+                fileName = "uploadedFile.png" if type(uploaded_file) == ContentFile else uploaded_file.name
+                print(fileName)
                 fs = FileSystemStorage()
-                name = fs.save(uploaded_file.name, uploaded_file)
+                name = fs.save(fileName, uploaded_file)
                 context['url'] = fs.url(name)
 
                 tagsList = OCR(name).readText()
@@ -52,8 +56,7 @@ def upload(request):
                     f.seek(0)
                     f.write(str(html.template.prettify()))
 
-            if  len(request.POST.getlist('navbarTitle')) > 0:
-                
+            if  request.POST.dict().get('navbarTitle', False):
                 tagData = {}
                 tagData['navbar'] = request.POST.getlist('navbarTitle')[0]
                 print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'))
