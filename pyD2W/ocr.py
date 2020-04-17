@@ -10,8 +10,8 @@ from difflib import get_close_matches
 class OCR:
     def __init__(self, imageName: str):
         self.imageName = imageName
-        self.real_tags = ['container', 'row', 'coloumn', 'navbar', 'col', 'image', 'card', 'container-end', 'row-end', 'coloumn-end', 'carousel', 'text']
-        self.allowed_tags = ['container', 'row', 'coloumn', 'navbar', 'image', 'card', 'column', 'cofoumm']
+        self.real_tags = ['container', 'row', 'coloumn', 'navbar', 'image', 'card', 'container-end', 'row-end', 'coloumn-end', 'carousel', 'text', 'jumbotron']
+        # self.allowed_tags = ['container', 'row', 'coloumn', 'navbar', 'image', 'card', 'column', 'cofoumm']
 
     def formater(self, line: str):
         if line not in ['', ' ']:
@@ -31,12 +31,13 @@ class OCR:
         print(tags)
         for tag in tags:
             try:
-                close_match = get_close_matches(tag, self.real_tags, n = 1, cutoff = 0.6)
+                close_match = get_close_matches(tag.lower(), self.real_tags, n = 1, cutoff = 0.6)
                 if close_match[0] in self.real_tags:
                     final_tags.append(close_match[0])
             except Exception as e:
                 print(e, tag)
                 pass
+        # print(final_tags)
         return final_tags
 
 

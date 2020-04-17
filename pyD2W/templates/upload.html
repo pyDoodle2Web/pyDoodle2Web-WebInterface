@@ -1,15 +1,96 @@
 {% extends 'base.html' %}
 
+<!-- ------------------Litterally Canvas Files-------------- -->
+{% block additional-head %}
+
+{% load static %}
+<link href="{% static "literallycanvas/literallycanvas.css" %}" rel="stylesheet">
+
+<!-- dependency: React.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-with-addons.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script> -->
+
+<!-- Literally Canvas -->
+<script src="{% static "literallycanvas/literallycanvas.min.js" %}"></script>
+<style>
+  .literally {
+    height: 100%;
+  }
+
+  input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+{% endblock %}
+
+<!-- -------------------UPLOAD FORM------------------------ -->
+
 {% block content %}
-<div class="container p-5">
+<div class="container px-lg-4 py-5">
+  <img src="{% static "assets/pyDoodle2Web.png" %}" alt="pyDoodle2Web-logo" class="img-fluid my-1">
+  <hr>
   <h2>Upload your doodle</h2>
-  <form class="form-group" method="post" enctype="multipart/form-data">
+  <div class="alert alert-secondary pt-3">
+    <p>Make sure your doodle has clear and visible lines and text. pyDoodle2Web currently works best with digitally
+      drawn lines and text (MS paint drawn shapes).
+      <br> To check out an example doodle, <a
+        href="https://github.com/therexone/pyDoodle2Web/blob/master/referenceDoodle.png">click here. </a>
+    </p>
+  </div>
+  <form class="form-group mt-4" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+
+    {% if not carousel or navbarTitle %}
     <input class="" type="file" name="document" style="outline: 1px solid #afafaf; width: 50%;" accept="image/*">
+    {% endif %}
+    <!-- ------------------------Dyanmic content form------------------------- -->
+    {% if navbarTitle %}
+    <div class="alert alert-success mt-4">
+      <p>A navbar was detected in the doodle. Enter a title for the Navbar: </p>
+      <input type="text" name="navbarTitle">
+    </div>
+
+    {% endif %}
+
+    {% if carousel %}
+
+    <div class="alert alert-success mt-4 form-group d-inline-block">
+      <p>A carousel was detected in the doodle. Select the number of images in the carousel: </p>
+      <select name="carousel" class="form-control d-inline-block w-50" >
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+      </select>
+    </div>
+
+    {% endif %}
+
+
+    {% if navbarTitle or carousel %}
+    <button class="btn btn-dark ml-4 px-4" type="submit">Add customisation</button>
+    {% endif %}
+
+    {% if not carousel or navbarTitle %}
+    <div class="d-inline-block mt-3 alert alert-primary w-50">
+      <input type="checkbox" name="darkMode" value='true' class="checkbox">
+      <label class="ml-2 align-top d-inline" for="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
+    </div>
     <button class="btn btn-dark ml-4 px-4" type="submit">Upload file</button>
+
+    {% endif %}
+
   </form>
   {% if url %}
-    <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
+  <p>Uploaded file: <a href="{{ url }}">{{ url }}</a></p>
   {% endif %}
 
   {% if error %}
@@ -17,11 +98,95 @@
   {% endif %}
 
   {% if generated_url %}
-    <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
-    <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
+  <a href="/generate/" class="btn btn-dark ml-4 px-4">Generate Website</a>
+  <a href="/downloadSource/" class="btn btn-dark ml-4 px-4">Download Source</a>
+
   {% endif %}
 
 
+
+  <!-- -----------------------------LiterallyCanvas Canvas-------------------------------- -->
+  <hr>
+  <h2>Draw it!</h2>
+  <p>Use the <a href="http://literallycanvas.com/">Literally Canvas</a> powered drawing tool to draw and download a
+    doodle right here.</p>
+  <div class="my-drawing" style="height: 640px; border: 1px solid grey;"></div>
+  <button class="btn btn-dark mt-4 px-4" onclick="saveImage()">Get Doodle</button>
+  <button class="btn btn-dark mt-4 px-4" onclick="uploadImage()">Generate Website</button>
+
+  <!-- <button class="btn btn-dark" onclick="uploadDoodle()"> Upload</button> -->
+
+  <script>
+    var lc = LC.init(
+      document.getElementsByClassName('my-drawing')[0],
+      {
+        imageURLPrefix: '{% static "literallycanvas/img" %}', tools: [
+          LC.tools.Rectangle,
+          LC.tools.Eraser,
+          LC.tools.Line,
+          LC.tools.Text,],
+        strokeWidths: [1, 2, 5, 10, 15],
+        defaultStrokeWidth: 1,
+        backgroundShapes: [LC.createShape('Rectangle', { x: 0, y: 0, width: 1024, height: 640, strokeWidth: 1, fillColor: '#fff' })]
+      }
+    );
+
+    function getDoodle(dataURL) {
+      var a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'doodle.png';
+      document.body.appendChild(a);
+      a.click()
+    }
+
+    // var csrftoken = getCookie('csrftoken');
+
+    function saveImage() {
+      var imageUrl = lc.getImage().toDataURL();
+      getDoodle(imageUrl);
+    }
+
+
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+    
+    function uploadImage() {
+      $.ajax({
+        url: "/upload/",
+        type: "POST",
+        data: { 'imageUrl': lc.getImage().toDataURL() },
+        headers: {
+          "X-CSRFToken": getCookie('csrftoken')
+        },
+        success: function (response) {
+          var a = document.createElement('a');
+          a.href = '/generate';
+          document.body.appendChild(a);
+          a.click()
+        },
+        complete: function () { },
+        error: function (xhr, textStatus, thrownError) {
+          alert("error doing something");
+        }
+      });
+    }
+
+  </script>
+
+
+
 </div>
-  
+
 {% endblock %}
