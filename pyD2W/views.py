@@ -12,13 +12,40 @@ import os
 import base64
 import logging
 from bs4 import BeautifulSoup
-
+import json
 from django.core.files.base import ContentFile
 
 
 def home(request):
     return render(request, 'index.html')
 
+def readImage(request):
+    if request.method == "POST":
+        if 'document' in request.FILES:
+            uploaded_file = request.FILES['document']
+
+        if request.POST.dict().get('imageUrl', False):
+            url = request.POST.dict().get('imageUrl', False)
+            format, imgstr = url.split(';base64,') 
+            ext = format.split('/')[-1] 
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+            uploaded_file = data
+
+        try:
+            validate_image_file_extension(uploaded_file)
+            fileName = "uploadedFile.png" if type(uploaded_file) == ContentFile else uploaded_file.name
+            fs = FileSystemStorage()
+            name = fs.save(fileName, uploaded_file)
+
+            tagsList = OCR(name).readText()
+            payload = {'tags' : tagsList, 'url': fs.url(name)}            
+            return HttpResponse(json.dumps(payload))
+
+        except Exception:
+            payload = {'message' : "Error Occurred! Make sure the uploaded file is an Image"}
+            return HttpResponse(json.dumps(payload), status = 400)
+            
+    return HttpResponse(json.dumps({'error': 'not a POST request'}), status=400)
 
 def upload(request):
     context = {}

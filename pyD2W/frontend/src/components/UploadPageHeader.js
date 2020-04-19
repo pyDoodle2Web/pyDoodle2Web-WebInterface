@@ -2,7 +2,7 @@ import React from 'react';
 
 const UploadPageHeader = () => {
     return (
-        <div className="container px-lg-4 py-5">
+        <div>
         <img src="/static/img/pyDoodle2Web.png" alt="pyDoodle2Web-logo" className="img-fluid my-1"></img>
         <hr></hr>
         <h2>Upload your doodle</h2>
