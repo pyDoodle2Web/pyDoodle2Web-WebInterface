@@ -1,10 +1,9 @@
 import React from 'react';
+import UploadPageHeader from '../components/UploadPageHeader';
 
 const UploadPage = () => {
     return (
-        <div>
-            HEllooo
-        </div>
+       <UploadPageHeader />
     );
 }
 

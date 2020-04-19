@@ -21,7 +21,7 @@ const LandingPage = () => {
 
                 </div>
                 <div className="col-lg-6 align-self-center">
-        <img src="static/img/rhs-images.webp" className="img-fluid" alt="logo"></img>
+        <img src="/static/img/rhs-images.webp" className="img-fluid" alt="logo"></img>
       </div>
             </div>
         </div>
