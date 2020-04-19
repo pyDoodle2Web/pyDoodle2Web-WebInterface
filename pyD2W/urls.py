@@ -8,4 +8,4 @@ urlpatterns = [
     path('upload/', views.upload, name='upload'),
     path('generate/', views.generate, name='generate'),
     path('downloadSource/', views.downloadSource, name='downloadSource')
-]
+] 

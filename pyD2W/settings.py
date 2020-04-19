@@ -54,7 +54,7 @@ ROOT_URLCONF = 'pyD2W.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['pyD2W/templates'],
+        'DIRS': ['pyD2W/frontend/build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'pyD2W/static')
+    os.path.join(BASE_DIR, 'pyD2W/frontend/build/static'),
 ]
 
 
