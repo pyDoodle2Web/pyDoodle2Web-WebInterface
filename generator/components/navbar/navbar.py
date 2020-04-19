@@ -9,6 +9,7 @@ class Navbar:
 
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
+            
         nav = soup.find('nav')
         if darkMode:
             nav['class'] = 'navbar navbar-expand-lg navbar-dark bg-dark'
