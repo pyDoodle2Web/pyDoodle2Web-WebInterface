@@ -19,6 +19,7 @@ from django.core.files.base import ContentFile
 def home(request):
     return render(request, 'index.html')
 
+
 def readImage(request):
     if request.method == "POST":
         if 'document' in request.FILES:
@@ -26,26 +27,46 @@ def readImage(request):
 
         if request.POST.dict().get('imageUrl', False):
             url = request.POST.dict().get('imageUrl', False)
-            format, imgstr = url.split(';base64,') 
-            ext = format.split('/')[-1] 
+            format, imgstr = url.split(';base64,')
+            ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
             uploaded_file = data
 
         try:
             validate_image_file_extension(uploaded_file)
-            fileName = "uploadedFile.png" if type(uploaded_file) == ContentFile else uploaded_file.name
+            fileName = "uploadedFile.png" if type(
+                uploaded_file) == ContentFile else uploaded_file.name
             fs = FileSystemStorage()
             name = fs.save(fileName, uploaded_file)
 
             tagsList = OCR(name).readText()
-            payload = {'tags' : tagsList, 'url': fs.url(name)}            
+            payload = {'tags': tagsList, 'url': fs.url(name)}
             return HttpResponse(json.dumps(payload))
 
         except Exception:
-            payload = {'message' : "Error Occurred! Make sure the uploaded file is an Image"}
-            return HttpResponse(json.dumps(payload), status = 400)
-            
+            payload = {
+                'message': "Error Occurred! Make sure the uploaded file is an Image"}
+            return HttpResponse(json.dumps(payload), status=400)
+
     return HttpResponse(json.dumps({'error': 'not a POST request'}), status=400)
+
+
+def generate(request):
+    if request.method == 'POST':
+        tags = request.POST.dict().get('tags', '')
+        tags = tags.strip('][').split(',')
+        print(tags)
+        darkMode = request.POST.dict().get('darkMode', [])
+        tagData = request.POST.dict()
+
+        html, _ = HTMLGenerator(tags, darkMode=darkMode).generateHTML()
+        html = DynamicHtmlGenerator(html.template, tagData).add_data_to_html()
+        htmlString = str(html)
+
+        payload = {'html': htmlString}
+        return HttpResponse(json.dumps(payload), status=200)
+    return HttpResponse(json.dumps({'error': 'not a POST request'}), status=400)
+
 
 def upload(request):
     context = {}
@@ -55,11 +76,11 @@ def upload(request):
             'darkMode') and request.POST.getlist('darkMode')[0] == 'true' else False
 
         uploaded_file = request.FILES['document'] if 'document' in request.FILES else False
-      
+
         if request.POST.dict().get('imageUrl', False):
             url = request.POST.dict().get('imageUrl', False)
-            format, imgstr = url.split(';base64,') 
-            ext = format.split('/')[-1] 
+            format, imgstr = url.split(';base64,')
+            ext = format.split('/')[-1]
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
 
             uploaded_file = data
@@ -69,15 +90,17 @@ def upload(request):
 
             if uploaded_file:
                 validate_image_file_extension(uploaded_file)
-                fileName = "uploadedFile.png" if type(uploaded_file) == ContentFile else uploaded_file.name
+                fileName = "uploadedFile.png" if type(
+                    uploaded_file) == ContentFile else uploaded_file.name
                 print(fileName)
                 fs = FileSystemStorage()
                 name = fs.save(fileName, uploaded_file)
                 context['url'] = fs.url(name)
 
                 tagsList = OCR(name).readText()
-                html, _ = HTMLGenerator(tagsList, darkMode=darkMode).generateHTML()
-      
+                html, _ = HTMLGenerator(
+                    tagsList, darkMode=darkMode).generateHTML()
+
                 context['navbarTitle'] = True if 'navbar' in tagsList else False
                 context['carousel'] = True if 'carousel' in tagsList else False
 
@@ -85,15 +108,16 @@ def upload(request):
                     f.seek(0)
                     f.write(str(html.template.prettify()))
 
-            if  request.POST.dict().get('navbarTitle', False) or request.POST.dict().get('carousel', False):
+            if request.POST.dict().get('navbarTitle', False) or request.POST.dict().get('carousel', False):
                 tagData = {}
-                
+
                 if len(request.POST.getlist('navbarTitle')) > 0:
                     tagData['navbar'] = request.POST.getlist('navbarTitle')[0]
                 if len(request.POST.getlist('carousel')) > 0:
                     tagData['carousel'] = request.POST.getlist('carousel')[0]
-                    
-                print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html'))
+
+                print(os.path.join(os.path.dirname(os.path.realpath(
+                    __file__)), 'templates', 'generated.html'))
                 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates', 'generated.html')) as f:
                     html = BeautifulSoup(f, 'html.parser')
                 html = DynamicHtmlGenerator(html, tagData).add_data_to_html()
@@ -102,7 +126,7 @@ def upload(request):
                     f.seek(0)
                     f.write(str(html.prettify()))
 
-            context['generated_url'] = True 
+            context['generated_url'] = True
             if uploaded_file:
                 fs.delete(uploaded_file.name)
         except Exception as e:
@@ -113,8 +137,8 @@ def upload(request):
     # return render(request, 'upload.html', context)
     return render(request, 'index.html')
 
-def generate(request):
-    return render(request, 'generated.html')
+# def generate(request):
+#     return render(request, 'generated.html')
 
 
 def downloadSource(request):

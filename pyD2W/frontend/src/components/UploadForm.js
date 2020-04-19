@@ -9,13 +9,13 @@ const UploadForm = () => {
     const [tags, setTags] = useState([])
     useEffect(() => {
         if (tags.length != 0) {
-            setFormState({ ...formState, upload: true })
+            setFormState((prevState) => ({ ...prevState, upload: true }))
         }
         if (tags.includes('navbar')) {
-            setFormState({ ...formState, navbar: true })
+            setFormState((prevState) => ({ ...prevState, navbar: true }))
         }
         if (tags.includes('carousel')) {
-            setFormState({ ...formState, 'carousel': true })
+            setFormState((prevState) => ({ ...prevState, carousel: true }))
         }
     }, [tags])
 
@@ -27,7 +27,14 @@ const UploadForm = () => {
                 e.preventDefault();
                 const form = document.getElementById('form');
                 const data = new FormData(form);
-                fetch('/readImage/', {
+                let url ;
+                if(!formState.upload){
+                    url = '/readImage/';
+                }else{
+                    url = '/generate/'
+                    data.append('tags', tags);
+                }
+                fetch(url, {
                     method: 'POST',
                     body: data,
                     headers: {
@@ -37,7 +44,12 @@ const UploadForm = () => {
                     .then(resp => resp.json()
                     )
                     .then(data => {
-                        setTags(data.tags)
+                        if (!formState.upload) {
+                            setTags(data.tags)
+                        }
+                        else{
+                            console.log(data);
+                        }
                     });
             }}
         >
@@ -75,15 +87,18 @@ const UploadForm = () => {
             }
 
             {
-                formState.upload && 
+                formState.upload &&
                 <button className="btn btn-dark ml-4 px-4" type="submit">Add customisation</button>
             }
 
 
-            <div className="d-inline-block mt-3 alert alert-primary w-50">
-                <input type="checkbox" name="darkMode" value='true' className="checkbox"></input>
-                <label className="ml-2 align-top d-inline" htmlFor="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
-            </div>
+            {
+                !formState.upload &&
+                <div className="d-inline-block mt-3 alert alert-primary w-50">
+                    <input type="checkbox" name="darkMode" value='true' className="checkbox"></input>
+                    <label className="ml-2 align-top d-inline" htmlFor="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
+                </div>
+            }
 
             {
                 !formState.upload &&
