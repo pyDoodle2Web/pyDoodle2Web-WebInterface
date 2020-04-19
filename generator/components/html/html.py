@@ -10,7 +10,7 @@ class HTML:
         with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'template.html')) as f:
             soup = BeautifulSoup(f, 'html.parser')
         if darkMode:
-            body = soup.find('body')
+            body = soup.find('div')
             body['style'] = 'background-color:#343a40;color:white'
         else:
             body = soup.find('body')

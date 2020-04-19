@@ -50,10 +50,7 @@ const UploadForm = (props) => {
                             setTags(data.tags)
                         }
                         else {
-                            // console.log(data.html);
-                            // setHtml(data.html);
                             props.setHtml(data.html)
-                            // console.log(props)
                             setHtmlGenerated(true);
                         }
                     });
