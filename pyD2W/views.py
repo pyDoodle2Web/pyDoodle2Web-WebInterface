@@ -18,6 +18,8 @@ from django.core.files.base import ContentFile
 
 def home(request):
     return render(request, 'index.html')
+def generatedSite(request):
+    return render(request, 'index.html')
 
 
 def readImage(request):
@@ -55,11 +57,11 @@ def generate(request):
     if request.method == 'POST':
         tags = request.POST.dict().get('tags', '')
         tags = tags.strip('][').split(',')
-        print(tags)
-        darkMode = request.POST.dict().get('darkMode', [])
+        darkMode = request.POST.dict().get('darkMode', False)
         tagData = request.POST.dict()
+        print(darkMode)
 
-        html, _ = HTMLGenerator(tags, darkMode=darkMode).generateHTML()
+        html, _ = HTMLGenerator(tags, darkMode=True).generateHTML()
         html = DynamicHtmlGenerator(html.template, tagData).add_data_to_html()
         htmlString = str(html)
 

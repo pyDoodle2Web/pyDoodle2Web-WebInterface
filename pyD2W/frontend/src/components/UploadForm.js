@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 
-const UploadForm = () => {
+const UploadForm = (props) => {
     const [formState, setFormState] = useState({
         carousel: false,
         navbar: false,
         upload: false
     });
-    const [tags, setTags] = useState([])
+    const [tags, setTags] = useState([]);
+    const [htmlGenerated, setHtmlGenerated] = useState(false);
     useEffect(() => {
         if (tags.length != 0) {
             setFormState((prevState) => ({ ...prevState, upload: true }))
@@ -27,10 +29,10 @@ const UploadForm = () => {
                 e.preventDefault();
                 const form = document.getElementById('form');
                 const data = new FormData(form);
-                let url ;
-                if(!formState.upload){
+                let url;
+                if (!formState.upload) {
                     url = '/readImage/';
-                }else{
+                } else {
                     url = '/generate/'
                     data.append('tags', tags);
                 }
@@ -47,8 +49,12 @@ const UploadForm = () => {
                         if (!formState.upload) {
                             setTags(data.tags)
                         }
-                        else{
-                            console.log(data);
+                        else {
+                            // console.log(data.html);
+                            // setHtml(data.html);
+                            props.setHtml(data.html)
+                            // console.log(props)
+                            setHtmlGenerated(true);
                         }
                     });
             }}
@@ -91,9 +97,9 @@ const UploadForm = () => {
                 <button className="btn btn-dark ml-4 px-4" type="submit">Add customisation</button>
             }
 
-
+            <br></br>
             {
-                !formState.upload &&
+                formState.upload &&
                 <div className="d-inline-block mt-3 alert alert-primary w-50">
                     <input type="checkbox" name="darkMode" value='true' className="checkbox"></input>
                     <label className="ml-2 align-top d-inline" htmlFor="darkMode">Dark Mode (Adds dark theme to the generated html)</label>
@@ -105,8 +111,13 @@ const UploadForm = () => {
                 <input className="btn btn-dark ml-4 px-4" type="submit"></input>
             }
 
-
+            {
+                htmlGenerated &&
+             <Redirect to="/generatedSite" />
+        }
         </form>
+
+
     );
 }
 

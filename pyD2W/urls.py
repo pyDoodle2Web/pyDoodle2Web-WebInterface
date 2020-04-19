@@ -9,5 +9,7 @@ urlpatterns = [
     # path('generate/', views.generate, name='generate'),
     path('downloadSource/', views.downloadSource, name='downloadSource'),
     path('readImage/', views.readImage, name='readImage'),
-    path('generate/', views.generate, name='generate')
+    path('generate/', views.generate, name='generate'),
+    path('generatedSite/', views.generatedSite, name='generatedSite')
+
 ] 
