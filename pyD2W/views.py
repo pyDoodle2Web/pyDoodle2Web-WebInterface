@@ -10,8 +10,6 @@ from generator.main import HTMLGenerator
 from generator.dynamic_generator import DynamicHtmlGenerator
 import os
 import base64
-import logging
-from bs4 import BeautifulSoup
 import json
 from django.core.files.base import ContentFile
 
@@ -45,10 +43,14 @@ def readImage(request):
 
         except Exception:
             payload = {
-                'message': "Error Occurred! Make sure the uploaded file is an Image"}
+                'message':
+                "Error Occurred! Make sure the uploaded file is an Image"
+            }
             return HttpResponse(json.dumps(payload), status=400)
 
-    return HttpResponse(json.dumps({'error': 'not a POST request'}), status=400)
+    return HttpResponse(
+        json.dumps({'error': 'not a POST request'}),
+        status=400)
 
 
 def generate(request):
@@ -64,7 +66,9 @@ def generate(request):
 
         payload = {'html': htmlString}
         return HttpResponse(json.dumps(payload), status=200)
-    return HttpResponse(json.dumps({'error': 'not a POST request'}), status=400)
+    return HttpResponse(
+        json.dumps({'error': 'not a POST request'}),
+        status=400)
 
 
 def downloadSource(request):

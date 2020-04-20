@@ -1,5 +1,3 @@
-
-from django.contrib import admin
 from django.urls import path
 from . import views
 
@@ -10,4 +8,4 @@ urlpatterns = [
     path('generate/', views.generate, name='generate'),
     path('generatedSite/', views.home, name='generatedSite'),
     path('downloadSource/', views.downloadSource, name='downloadSource'),
-] 
+]

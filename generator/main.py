@@ -13,7 +13,7 @@ from math import floor
 
 
 class HTMLGenerator:
-    def __init__(self, tagsList = [], darkMode=False):
+    def __init__(self, tagsList=[], darkMode=False):
         self.html = HTML(darkMode=darkMode)
         self.elementDict = {
             'container': lambda **kw: Container(**kw),
@@ -28,17 +28,23 @@ class HTMLGenerator:
         }
         self.darkModeTags = ['navbar', 'card']
         self.darkMode = darkMode
-        # self.tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn', 'coloumn', 'coloumn', 'card', 'image', 'card', 'coloumn-end', 'coloumn-end', 'coloumn-end',
-        #                  'row-end', 'container-end', 'container', 'row', 'coloumn', 'coloumn', 'image', 'text', 'coloumn-end', 'coloumn-end', 'row-end', 'container-end']
-        self.tagsList = tagsList
+    # self.tagsList = ['navbar', 'carousel',  'container', 'row', 'coloumn',
+    #                  'coloumn', 'coloumn', 'card', 'image', 'card',
+    #                  'coloumn-end', 'coloumn-end', 'coloumn-end',
+    #                  'row-end', 'container-end', 'container', 'row',
+    #                  'coloumn', 'coloumn', 'image', 'text', 'coloumn-end',
+    #                  'coloumn-end', 'row-end', 'container-end']
+    # self.tagsList = tagsList
 
-    def generateHTML(self, parent = None,  tagName: str = 'html', index=0):
+    def generateHTML(self, parent=None,  tagName: str = 'html', index=0):
         parent = self.html if not parent else parent
         i = index
         while i < len(self.tagsList):
             elementTag = self.tagsList[i]
             element = self.elementDict.get(elementTag, Container)
-            element = element(darkMode=self.darkMode) if elementTag in self.darkModeTags else element()
+            element = element(
+                darkMode=self.darkMode
+                ) if elementTag in self.darkModeTags else element()
 
             if elementTag == 'coloumn':
                 col_count = 0
@@ -65,7 +71,8 @@ class HTMLGenerator:
                 return (parent, i)
 
             if element.isParentLike:
-                appendedElement, new_i = self.generateHTML(element, elementTag, i+1)
+                appendedElement, new_i = self.generateHTML(
+                    element, elementTag, i+1)
                 parent.appendElement(appendedElement.template)
                 i = new_i
                 pass
@@ -84,21 +91,23 @@ class HTMLGenerator:
 if __name__ == '__main__':
     from .ocr import OCR
     import argparse
-    import sys, getopt
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p','--path', help='Path of the image', required=True)
-    args = parser.parse_args()
+    parser.add_argument(
+        '-p',
+        '--path',
+        help='Path of the image',
+        required=True)
 
+    args = parser.parse_args()
     path = args.path
     tags = OCR(path).readText()
     html, _ = HTMLGenerator(tags).generateHTML()
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'dump.html'), 'w') as f:
+    with open(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), 'dump.html'),
+            'w') as f:
         f.write(str(html.template.prettify()))
-        
     print(html.template)
-
-
-
 
 
 # yee, _ = HTMLGenerator().generateHTML()
