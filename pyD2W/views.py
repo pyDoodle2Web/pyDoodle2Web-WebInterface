@@ -59,9 +59,8 @@ def generate(request):
         tags = tags.strip('][').split(',')
         darkMode = request.POST.dict().get('darkMode', False)
         tagData = request.POST.dict()
-        print(darkMode)
-
-        html, _ = HTMLGenerator(tags, darkMode=True).generateHTML()
+        darkMode = True if darkMode == 'true' else False
+        html, _ = HTMLGenerator(tags, darkMode=darkMode).generateHTML()
         html = DynamicHtmlGenerator(html.template, tagData).add_data_to_html()
         htmlString = str(html)
 
