@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 
-const UploadForm = (props) => {
+interface UploadFormProps {
+    setHtml: (html:any) => {}
+}
+
+const UploadForm: React.FC<UploadFormProps> = (props: UploadFormProps) => {
     const [formState, setFormState] = useState({
         carousel: false,
         navbar: false,
         upload: false
     });
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState<string[]>([]);
     const [htmlGenerated, setHtmlGenerated] = useState(false);
     useEffect(() => {
         if (tags.length != 0) {
@@ -27,27 +31,29 @@ const UploadForm = (props) => {
             id="form"
             onSubmit={async (e) => {
                 e.preventDefault();
-                const form = document.getElementById('form');
+                const form = document.getElementById('form') as HTMLFormElement;
                 const data = new FormData(form);
+                const csrfToken = getCoockie('csrftoken')!;
+                const headers = new Headers({
+                    "X-CSRFToken": csrfToken
+                })
                 let url;
                 if (!formState.upload) {
                     url = '/readImage/';
                 } else {
                     url = '/generate/'
-                    data.append('tags', tags);
+                    data.append('tags', JSON.stringify(tags));
                 }
                 fetch(url, {
                     method: 'POST',
                     body: data,
-                    headers: {
-                        "X-CSRFToken": getCoockie('csrftoken')
-                    }
+                    headers
                 })
                     .then(resp => resp.json()
                     )
                     .then(data => {
                         if (!formState.upload) {
-                            setTags(data.tags)
+                            setTags(JSON.parse(data.tags))
                         }
                         else {
                             props.setHtml(data.html)
@@ -110,15 +116,15 @@ const UploadForm = (props) => {
 
             {
                 htmlGenerated &&
-             <Redirect to="/generatedSite" />
-        }
+                <Redirect to="/generatedSite" />
+            }
         </form>
 
 
     );
 }
 
-const getCoockie = (name) => {
+const getCoockie = (name: any) => {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
