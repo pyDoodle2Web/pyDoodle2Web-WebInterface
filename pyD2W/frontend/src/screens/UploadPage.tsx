@@ -2,7 +2,12 @@ import React from 'react';
 import UploadPageHeader from '../components/UploadPageHeader';
 import UploadForm from '../components/UploadForm';
 
-const UploadPage = (props) => {
+
+interface UploadPageProps {
+    setHtml: (html:any) => {}
+}
+
+const UploadPage = (props: UploadPageProps) => {
     return (
         <div className="container px-lg-4 py-5">
             <UploadPageHeader />
