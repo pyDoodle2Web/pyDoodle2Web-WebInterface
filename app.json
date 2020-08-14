@@ -1,0 +1,7 @@
+{
+    "name": "PyDoodle2Web",
+    "description": "A handy tool written in Python that converts hand drawn doodles into Bootstrap html website template.",
+    "repository": "https://github.com/pyDoodle2Web/pyDoodle2Web-WebInterface",
+    "logo": "https://cdn.discordapp.com/attachments/683669768401715221/743976025473417317/65623229.png",
+    "keywords": ["Python", "Django"]
+  }
