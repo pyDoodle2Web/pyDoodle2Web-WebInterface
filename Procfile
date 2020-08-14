@@ -1,2 +1,2 @@
 
-web: gunicorn pydoodle2web.wsgi --log-file -
+web: gunicorn pyD2W.wsgi --log-file -
