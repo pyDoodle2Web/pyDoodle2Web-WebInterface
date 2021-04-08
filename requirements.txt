@@ -1,7 +1,7 @@
 asgiref==3.2.5
 beautifulsoup4==4.8.2
 bs4==0.0.1
-Django==3.0.7
+Django==3.0.14
 Pillow==7.0.0
 pytesseract==0.3.3
 pytz==2019.3
